@@ -1,0 +1,69 @@
+{
+  "name": "@dvsa/mes-microservice-common",
+  "version": "0.1.0",
+  "author": "DVSA",
+  "license": "MIT",
+  "description": "Code common to the MES microservice layer",
+  "homepage": "https://github.com/dvsa/mes-microservice-common#README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvsa/mes-microservice-common.git"
+  },
+  "files": ["application/**/*", "domain/**/*", "framework/**/*" ],
+  "dependencies": {
+    "@dvsa/mes-test-schema": "^1.0.21"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^2.8.9",
+    "@types/node": "^8.10.0",
+    "jasmine": "^3.3.1",
+    "jasmine-spec-reporter": "^4.2.1",
+    "npm-run-all": "^4.1.5",
+    "nyc": "^14.1.0",
+    "rimraf": "^2.6.2",
+    "ts-node": "^8.0.3",
+    "tslint": "5.11.0",
+    "tslint-config-airbnb": "5.11.0",
+    "typemoq": "^2.1.0",
+    "typescript": "3.2.1"
+  },
+  "scripts": {
+    "clean": "rimraf build artefacts dist",
+    "compile": "rm -rf build && tsc",
+    "compile-no-emit": "tsc --noEmit -p .",
+    "lint": "tslint --project tslint.json",
+    "lint:fix": "tslint --fix -p ./",
+    "package": "npm run clean && npm run test && npm run lint && ./package.sh",
+    "postci": "npm run bootstrap",
+    "prepush": "npm run security-scan && npm run lint && npm test",
+    "security-scan": "git secrets --scan && git log -p | scanrepo",
+    "test": "npm run compile && jasmine",
+    "test:jasmine-coverage": "nyc npm run test"
+  },
+  "nyc": {
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "exclude": [
+      "**/__mocks__/*",
+      "**/__tests__/*"
+    ],
+    "exclude-after-remap": false,
+    "sourceMap": true,
+    "produce-source-map": true,
+    "instrument": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run security-scan && npm run lint && npm test",
+      "pre-commit": "run-s lint:fix lint compile-no-emit"
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/dvsa/mes-microservice-common/issues"
+  }
+}

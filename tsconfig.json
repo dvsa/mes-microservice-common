@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "outDir": "./build",
+    "allowJs": false,
+    "sourceMap": true,
+    "declaration": true,
+    "lib": ["es2017"],
+    "target": "es2017",
+    "types": [
+      "node",
+      "jasmine",
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true
+  },
+  "include": [
+    "./src/**/*",
+    "./spec/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
