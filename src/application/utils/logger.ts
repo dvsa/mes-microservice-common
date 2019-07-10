@@ -127,6 +127,19 @@ export function error(msg: string, ...objs: any[]): void {
   log(LogLevel.ERROR, formatMessage(msg, objs));
 }
 
+/**
+ * Writes a custom metric. Should be used with CloudWatch metric filters, that scrape values from log messages.
+ * @param name The metric name
+ * @param description The metric description
+ */
+export function customMetric(name: string, description: string): void {
+  if (logContext) {
+    console.log(JSON.stringify({ name, description, service: logContext.service }));
+  } else {
+    console.log(JSON.stringify({ name, description }));
+  }
+}
+
 function formatMessage(msg: string, objs: any[]): string {
   if (objs.length > 0) {
     return msg + (objs.map((x: any) => {

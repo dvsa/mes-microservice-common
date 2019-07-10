@@ -1,4 +1,4 @@
-import { debug, bootstrapLogging, info, warn, error } from '../logger';
+import { debug, bootstrapLogging, info, warn, error, customMetric } from '../logger';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 
 describe('logger, bootstrapped', () => {
@@ -208,6 +208,16 @@ describe('logger, bootstrapped', () => {
       bootstrapLogging('test-service', eventWithStaffNumber);
       debug(logMessage);
       checkMessageWasLoggedWithStaffNumber('DEBUG');
+    });
+  });
+
+  describe('customMetric', () => {
+    it('Should log the metric', () => {
+      process.env.LOG_LEVEL = 'DEBUG';
+      bootstrapLogging('test-service', eventWithoutStaffNumber);
+      customMetric('my-metric', 'my-description');
+      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
+                                               `"service":"test-service"}`);
     });
   });
 });
