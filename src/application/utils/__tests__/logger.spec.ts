@@ -1,5 +1,5 @@
 import { debug, bootstrapLogging, info, warn, error, customMetric } from '../logger';
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
 
 describe('logger, bootstrapped', () => {
   beforeEach(() => {
@@ -209,6 +209,23 @@ describe('logger, bootstrapped', () => {
       debug(logMessage);
       checkMessageWasLoggedWithStaffNumber('DEBUG');
     });
+
+    it('Should accept a call that includes a ScheduledEvent', () => {
+      process.env.LOG_LEVEL = 'DEBUG';
+      const scheduledEvent: ScheduledEvent = {
+        account: '12345',
+        region: 'eu-west-1',
+        detail: 'details',
+        'detail-type': 'type',
+        source: 'CloudWatch',
+        time: '2019-01-01 00:00:00',
+        id: '999',
+        resources: [],
+      };
+      bootstrapLogging('test-service', scheduledEvent);
+      debug(logMessage);
+      checkMessageWasLogged('DEBUG');
+    });
   });
 
   describe('customMetric', () => {
@@ -217,7 +234,7 @@ describe('logger, bootstrapped', () => {
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customMetric('my-metric', 'my-description');
       expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service"}`);
+        `"service":"test-service"}`);
     });
   });
 });
@@ -228,23 +245,23 @@ function checkMessageWasLogged(level: string) {
 
 function checkMessageWasLoggedWithStaffNumber(level: string) {
   expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","staffNumber":"00112233","level":"${level}",` +
-                                           `"message":"Log Message"}`);
+    `"message":"Log Message"}`);
 }
 
 function checkObjectWasLogged(level: string) {
   expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",` +
-                                          '"message":"Log Message: ' +
-                                          '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}"}');
+    '"message":"Log Message: ' +
+    '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}"}');
 }
 
 function checkSeveralObjectsWereLogged(level: string) {
   expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",` +
-                                            '"message":"Log Message: ' +
-                                            '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}' +
-                                            ' \\"test\\" 54321 false"}');
+    '"message":"Log Message: ' +
+    '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}' +
+    ' \\"test\\" 54321 false"}');
 }
 
 function checkErrorWasLogged(level: string) {
   expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",` +
-                                            '"message":"Log Message: Error: Oops"}');
+    '"message":"Log Message: Error: Oops"}');
 }
