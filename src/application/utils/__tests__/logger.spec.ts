@@ -209,6 +209,13 @@ describe('logger, bootstrapped', () => {
       debug(logMessage);
       checkMessageWasLoggedWithStaffNumber('DEBUG');
     });
+
+    it('Should accept a call that includes no APIG event', () => {
+      process.env.LOG_LEVEL = 'DEBUG';
+      bootstrapLogging('test-service');
+      debug(logMessage);
+      checkMessageWasLogged('DEBUG');
+    });
   });
 
   describe('customMetric', () => {

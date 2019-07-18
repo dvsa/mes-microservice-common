@@ -36,20 +36,22 @@ let logLevel: LogLevelCode;
  * or ``ERROR``. Only log messages at a level equal or above the configured level are actually output. If not set,
  * the default log level is ``DEBUG``.
  *
- * If the request context includes a staff number set by the custom authoriser, that is included in the structured log
- * output.
+ * Optionally takes an APIGatewayProxyEvent. If the request context in that event includes a staff number set by the
+ * custom authoriser, that is included in the structured log output.
  *
  * @param serviceName The name of the lambda service (convention is kebab-case)
  * @param event The lambda event being processed
  */
-export function bootstrapLogging(serviceName: string, event: APIGatewayProxyEvent): void {
+export function bootstrapLogging(serviceName: string, event?: APIGatewayProxyEvent): void {
   logContext = {
     service: serviceName,
   };
 
-  const staffNumber = getStaffNumberFromRequestContext(event.requestContext);
-  if (staffNumber) {
-    logContext.staffNumber = staffNumber;
+  if (event) {
+    const staffNumber = getStaffNumberFromRequestContext(event.requestContext);
+    if (staffNumber) {
+      logContext.staffNumber = staffNumber;
+    }
   }
 
   logLevel = nameToCode(process.env.LOG_LEVEL);
