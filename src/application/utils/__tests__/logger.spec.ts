@@ -1,5 +1,5 @@
 import { debug, bootstrapLogging, info, warn, error, customMetric } from '../logger';
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
 
 describe('logger, bootstrapped', () => {
   beforeEach(() => {
