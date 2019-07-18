@@ -209,6 +209,23 @@ describe('logger, bootstrapped', () => {
       debug(logMessage);
       checkMessageWasLoggedWithStaffNumber('DEBUG');
     });
+
+    it('Should accept a call that includes a ScheduledEvent', () => {
+      process.env.LOG_LEVEL = 'DEBUG';
+      const scheduledEvent: ScheduledEvent = {
+        account: '12345',
+        region: 'eu-west-1',
+        detail: 'details',
+        'detail-type': 'type',
+        source: 'CloudWatch',
+        time: '2019-01-01 00:00:00',
+        id: '999',
+        resources: [],
+      };
+      bootstrapLogging('test-service', scheduledEvent);
+      debug(logMessage);
+      checkMessageWasLogged('DEBUG');
+    });
   });
 
   describe('customMetric', () => {

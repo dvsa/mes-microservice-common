@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
 import { getStaffNumberFromRequestContext } from '../../framework/security/authorisation';
 
 enum LogLevel {
@@ -36,23 +36,30 @@ let logLevel: LogLevelCode;
  * or ``ERROR``. Only log messages at a level equal or above the configured level are actually output. If not set,
  * the default log level is ``DEBUG``.
  *
- * If the request context includes a staff number set by the custom authoriser, that is included in the structured log
- * output.
+ * Accepts either an APIGatewayProxyEvent or a ScheduledEvent.
+ * If the event is an APIGatewayProxyEvent with a request context including a staff number set by the custom authoriser,
+ * that is included in the structured log output.
  *
  * @param serviceName The name of the lambda service (convention is kebab-case)
  * @param event The lambda event being processed
  */
-export function bootstrapLogging(serviceName: string, event: APIGatewayProxyEvent): void {
+export function bootstrapLogging(serviceName: string, event: APIGatewayProxyEvent | ScheduledEvent): void {
   logContext = {
     service: serviceName,
   };
 
-  const staffNumber = getStaffNumberFromRequestContext(event.requestContext);
-  if (staffNumber) {
-    logContext.staffNumber = staffNumber;
+  if (event && instanceOfAPIGatewayProxyEvent(event)) {
+    const staffNumber = getStaffNumberFromRequestContext(event.requestContext);
+    if (staffNumber) {
+      logContext.staffNumber = staffNumber;
+    }
   }
 
   logLevel = nameToCode(process.env.LOG_LEVEL);
+}
+
+function instanceOfAPIGatewayProxyEvent(object: any): object is APIGatewayProxyEvent {
+  return 'requestContext' in object;
 }
 
 function nameToCode(name: string | undefined): LogLevelCode {
