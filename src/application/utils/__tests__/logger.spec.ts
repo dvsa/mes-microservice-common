@@ -236,6 +236,13 @@ describe('logger, bootstrapped', () => {
       expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
                                                `"service":"test-service"}`);
     });
+    it('Should log a metric that includes a value', () => {
+      process.env.LOG_LEVEL = 'DEBUG';
+      bootstrapLogging('test-service', eventWithoutStaffNumber);
+      customMetric('my-metric', 'my-description', 'my-value');
+      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
+                                               `"service":"test-service","value":"my-value"}`);
+    });
   });
 });
 
