@@ -138,13 +138,18 @@ export function error(msg: string, ...objs: any[]): void {
  * Writes a custom metric. Should be used with CloudWatch metric filters, that scrape values from log messages.
  * @param name The metric name
  * @param description The metric description
+ * @param value An optional value to include in the metric log output
  */
-export function customMetric(name: string, description: string): void {
+export function customMetric(name: string, description: string, value?: any): void {
+  let logObject: any = { name, description };
   if (logContext) {
-    console.log(JSON.stringify({ name, description, service: logContext.service }));
-  } else {
-    console.log(JSON.stringify({ name, description }));
+    const { service } = logContext;
+    logObject = { ...logObject, service };
   }
+  if (value !== undefined) {
+    logObject = { ...logObject, value };
+  }
+  console.log(JSON.stringify(logObject));
 }
 
 function formatMessage(msg: string, objs: any[]): string {
