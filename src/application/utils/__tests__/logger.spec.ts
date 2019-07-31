@@ -1,4 +1,4 @@
-import { debug, bootstrapLogging, info, warn, error, customMetric } from '../logger';
+import { debug, bootstrapLogging, info, warn, error, customMetric, customDurationMetric } from '../logger';
 import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
 
 describe('logger, bootstrapped', () => {
@@ -242,6 +242,30 @@ describe('logger, bootstrapped', () => {
       customMetric('my-metric', 'my-description', 'my-value');
       expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
                                                `"service":"test-service","value":"my-value"}`);
+    });
+  });
+
+  describe('customDurationMetric', () => {
+    it('Should log fractions of a second', () => {
+      const start = new Date(2019, 1, 31, 10, 15, 20, 0);
+      const end =   new Date(2019, 1, 31, 10, 15, 25, 0); // i.e. 5 seconds later
+
+      process.env.LOG_LEVEL = 'DEBUG';
+      bootstrapLogging('test-service', eventWithoutStaffNumber);
+      customDurationMetric('my-metric', 'my-description', start, end);
+      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
+                                               `"service":"test-service","value":5}`);
+    });
+
+    it('Should handle several hours', () => {
+      const start = new Date(2019, 1, 31, 10, 30, 20, 500);
+      const end =   new Date(2019, 1, 31, 12, 45, 25, 750); // i.e. 2:15:5.25 later, which is 8,105.25 seconds
+
+      process.env.LOG_LEVEL = 'DEBUG';
+      bootstrapLogging('test-service', eventWithoutStaffNumber);
+      customDurationMetric('my-metric', 'my-description', start, end);
+      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
+                                               `"service":"test-service","value":8105.25}`);
     });
   });
 });

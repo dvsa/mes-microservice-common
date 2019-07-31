@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
+import * as moment from 'moment';
 import { getStaffNumberFromRequestContext } from '../../framework/security/authorisation';
 
 enum LogLevel {
@@ -150,6 +151,18 @@ export function customMetric(name: string, description: string, value?: any): vo
     logObject = { ...logObject, value };
   }
   console.log(JSON.stringify(logObject));
+}
+
+/**
+ * Writes a custom metric for a time duration. Should be used with CloudWatch metric filters, that scrape values from
+ * log messages. Writes the metric value as fractions of a second.
+ * @param name The metric name
+ * @param description The metric description
+ * @param start The start time of the duration
+ * @param end The end time of the duration
+ */
+export function customDurationMetric(name: string, description: string, start: Date, end: Date): void {
+  customMetric(name, description, moment(end).diff(moment(start), 'seconds', true));
 }
 
 function formatMessage(msg: string, objs: any[]): string {
