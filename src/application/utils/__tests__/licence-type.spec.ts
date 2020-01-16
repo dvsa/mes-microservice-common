@@ -1,6 +1,6 @@
 import { licenceToIssue } from '../licence-type';
 
-fdescribe('licenseToIssue', () => {
+describe('licenseToIssue', () => {
   describe('rule1', () => {
     it('should return Manual when category C, transmission automatic and code78 false', () => {
       const retValue = licenceToIssue('C', 'Automatic', false);
