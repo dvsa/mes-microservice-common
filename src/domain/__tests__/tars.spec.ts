@@ -1,4 +1,4 @@
-import { ApplicationReference } from '@dvsa/mes-test-schema/categories/B';
+import { ApplicationReference } from '@dvsa/mes-test-schema/categories/common';
 import { formatApplicationReference } from '../tars';
 
 describe('formatApplicationReference', () => {
