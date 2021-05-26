@@ -15,7 +15,7 @@
     "framework/**/*"
   ],
   "dependencies": {
-    "@types/aws-lambda": "^8.10.13",
+    "@types/aws-lambda": "^8.10.76",
     "moment": "^2.24.0"
   },
   "devDependencies": {
