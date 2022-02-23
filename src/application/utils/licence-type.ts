@@ -9,14 +9,14 @@ export function licenceToIssue(
     code78Present?: boolean): string {
 
   const categoriesToCheck: string[] = [
-    TestCategory.C, 
-    TestCategory.CE, 
-    TestCategory.C1, 
-    TestCategory.C1E, 
-    TestCategory.D, 
+    TestCategory.C,
+    TestCategory.CE,
+    TestCategory.C1,
+    TestCategory.C1E,
+    TestCategory.D,
     TestCategory.DE,
-    TestCategory.D1, 
-    TestCategory.D1E, 
+    TestCategory.D1,
+    TestCategory.D1E,
   ];
 
   if (code78Present === undefined) {
