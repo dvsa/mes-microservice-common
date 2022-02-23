@@ -1,6 +1,6 @@
 {
   "name": "@dvsa/mes-microservice-common",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "author": "DVSA",
   "license": "MIT",
   "description": "Code common to the MES microservice layer",
@@ -19,7 +19,7 @@
     "moment": "^2.24.0"
   },
   "devDependencies": {
-    "@dvsa/mes-test-schema": "3.33.1",
+    "@dvsa/mes-test-schema": "3.37.2",
     "@types/jasmine": "^2.8.9",
     "@types/node": "^8.10.0",
     "jasmine": "^3.3.1",
