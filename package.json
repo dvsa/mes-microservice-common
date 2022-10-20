@@ -9,42 +9,42 @@
     "type": "git",
     "url": "git+https://github.com/dvsa/mes-microservice-common.git"
   },
-  "files": [
-    "application/**/*",
-    "domain/**/*",
-    "framework/**/*"
-  ],
-  "dependencies": {
-    "@types/aws-lambda": "^8.10.13",
-    "moment": "^2.29.4"
-  },
-  "devDependencies": {
-    "@dvsa/mes-test-schema": "3.37.2",
-    "@types/jasmine": "^2.8.9",
-    "@types/node": "^8.10.0",
-    "jasmine": "^3.3.1",
-    "jasmine-spec-reporter": "^4.2.1",
-    "npm-run-all": "^4.1.5",
-    "nyc": "^14.1.0",
-    "rimraf": "^2.6.2",
-    "ts-node": "^8.0.3",
-    "tslint": "5.11.0",
-    "tslint-config-airbnb": "5.11.0",
-    "typemoq": "^2.1.0",
-    "typescript": "3.2.1"
-  },
   "scripts": {
     "clean": "rimraf build artefacts dist",
     "compile": "rm -rf build && tsc",
     "compile-no-emit": "tsc --noEmit -p .",
-    "lint": "tslint --project tslint.json",
-    "lint:fix": "tslint --fix -p ./",
+    "lint": "eslint -c .eslintrc.js --ext .ts src",
+    "lint:fix": "eslint --fix -c .eslintrc.js --ext .ts src",
     "package": "npm run clean && npm run test && npm run lint && ./package.sh",
     "postci": "npm run bootstrap",
     "prepush": "npm run security-scan && npm run lint && npm test",
-    "security-scan": "git secrets --scan",
+    "security-scan": "git secrets --scan && git log -p | scanrepo",
     "test": "npm run compile && jasmine",
-    "test:jasmine-coverage": "nyc npm run test"
+    "test:jasmine-coverage": "nyc npm run test",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.108",
+    "moment": "^2.29.4"
+  },
+  "devDependencies": {
+    "@dvsa/mes-test-schema": "3.39.7",
+    "@types/jasmine": "^4.3.0",
+    "@types/node": "^16.10.2",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "husky": "^8.0.1",
+    "jasmine": "^4.4.0",
+    "jasmine-spec-reporter": "^7.0.0",
+    "npm-run-all": "^4.1.5",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "eslint": "^8.25.0",
+    "eslint-plugin-import": "^2.26.0",
+    "typemoq": "^2.1.0",
+    "typescript": "4.8.4"
   },
   "nyc": {
     "require": [
@@ -63,12 +63,11 @@
     "produce-source-map": true,
     "instrument": true
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run security-scan && npm run lint && npm test",
-      "pre-commit": "run-s lint:fix lint compile-no-emit"
-    }
-  },
+  "files": [
+    "application/**/*",
+    "domain/**/*",
+    "framework/**/*"
+  ],
   "bugs": {
     "url": "https://github.com/dvsa/mes-microservice-common/issues"
   }
