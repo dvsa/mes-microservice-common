@@ -220,7 +220,7 @@ describe('logger, bootstrapped', () => {
         region: 'eu-west-1',
         resources: [],
         source: 'CloudWatch',
-        'detail-type': 'type',
+        'detail-type': 'type' as any,
         detail: 'details',
       };
       bootstrapLogging('test-service', scheduledEvent);
