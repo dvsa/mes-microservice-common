@@ -1,8 +1,7 @@
-import { trimTestCategoryPrefix } from '../trim-test-category-prefix';
 import { CategoryCode } from '@dvsa/mes-test-schema/categories/common';
+import { trimTestCategoryPrefix } from '../trim-test-category-prefix';
 
 describe('trimTestCategoryPrefix', () => {
-
   describe('EU prefixed category codes', () => {
     const catATestCases = [
       { category: 'EUA1M1' as CategoryCode, expected: 'A1M1' },
@@ -20,7 +19,6 @@ describe('trimTestCategoryPrefix', () => {
         expect(trimTestCategoryPrefix(test.category)).toBe(test.expected);
       });
     });
-
   });
 
   describe('non EU prefixed category codes', () => {
@@ -51,7 +49,5 @@ describe('trimTestCategoryPrefix', () => {
         expect(trimTestCategoryPrefix(test.category)).toBe(test.expected);
       });
     });
-
   });
-
 });
