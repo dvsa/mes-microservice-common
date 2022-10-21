@@ -28,4 +28,5 @@ You will need to be logged into npm as a user within the **dvsa** organisation.
 
 To test what the ```npm publish``` command would do, append the ```--dry-run``` flag.
 
-Note: published package cannot be updated, only unpublished and builds with different version numbers published.
+Note: published package cannot be updated, only unpublished and builds with different version numbers published.  
+Publishing needs to be done from the /dist folder
