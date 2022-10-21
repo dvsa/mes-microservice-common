@@ -4,10 +4,10 @@ const MANUAL: string = 'Manual';
 const AUTOMATIC: string = 'Automatic';
 
 export function licenceToIssue(
-    category: string,
-    vehicleTransmission: string,
-    code78Present?: boolean): string {
-
+  category: string,
+  vehicleTransmission: string,
+  code78Present?: boolean,
+): string {
   const categoriesToCheck: string[] = [
     TestCategory.C,
     TestCategory.CE,
@@ -23,8 +23,8 @@ export function licenceToIssue(
     return vehicleTransmission;
   }
 
-  if (categoriesToCheck.findIndex(cat => cat === category) !== -1 &&
-  vehicleTransmission === AUTOMATIC && !code78Present) {
+  if (categoriesToCheck.findIndex((cat) => cat === category) !== -1
+  && vehicleTransmission === AUTOMATIC && !code78Present) {
     return MANUAL;
   }
 
