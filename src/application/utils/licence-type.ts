@@ -4,9 +4,9 @@ const MANUAL: string = 'Manual';
 const AUTOMATIC: string = 'Automatic';
 
 export function licenceToIssue(
-    category: string,
-    vehicleTransmission: string,
-    code78Present?: boolean): string {
+  category: string,
+  vehicleTransmission: string,
+  code78Present?: boolean): string {
 
   const categoriesToCheck: string[] = [
     TestCategory.C,

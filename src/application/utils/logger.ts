@@ -65,25 +65,25 @@ function instanceOfAPIGatewayProxyEvent(object: any): object is APIGatewayProxyE
 
 function nameToCode(name: string | undefined): LogLevelCode {
   switch (name) {
-    case 'DEBUG':
-      return LogLevelCode.DEBUG;
+  case 'DEBUG':
+    return LogLevelCode.DEBUG;
 
-    case 'INFO':
-      return LogLevelCode.INFO;
+  case 'INFO':
+    return LogLevelCode.INFO;
 
-    case 'WARN':
-      return LogLevelCode.WARN;
+  case 'WARN':
+    return LogLevelCode.WARN;
 
-    case 'ERROR':
-      return LogLevelCode.ERROR;
+  case 'ERROR':
+    return LogLevelCode.ERROR;
 
-    default:
-      if (name) {
-        warn(`${name} is an invalid log level. Defaulting to DEBUG`);
-      } else {
-        warn('No log level set, defaulting to DEBUG');
-      }
-      return LogLevelCode.DEBUG;
+  default:
+    if (name) {
+      warn(`${name} is an invalid log level. Defaulting to DEBUG`);
+    } else {
+      warn('No log level set, defaulting to DEBUG');
+    }
+    return LogLevelCode.DEBUG;
   }
 }
 

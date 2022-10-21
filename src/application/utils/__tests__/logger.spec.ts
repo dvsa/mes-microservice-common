@@ -213,14 +213,15 @@ describe('logger, bootstrapped', () => {
     it('Should accept a call that includes a ScheduledEvent', () => {
       process.env.LOG_LEVEL = 'DEBUG';
       const scheduledEvent: ScheduledEvent = {
-        account: '12345',
-        region: 'eu-west-1',
-        detail: 'details',
-        'detail-type': 'type',
-        source: 'CloudWatch',
-        time: '2019-01-01 00:00:00',
         id: '999',
+        version: 'ver1',
+        account: '12345',
+        time: '2019-01-01 00:00:00',
+        region: 'eu-west-1',
         resources: [],
+        source: 'CloudWatch',
+        'detail-type': 'type' as any,
+        detail: 'details',
       };
       bootstrapLogging('test-service', scheduledEvent);
       debug(logMessage);
@@ -233,15 +234,15 @@ describe('logger, bootstrapped', () => {
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customMetric('my-metric', 'my-description');
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service"}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",' +
+                                               '"service":"test-service"}');
     });
     it('Should log a metric that includes a value', () => {
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customMetric('my-metric', 'my-description', 'my-value');
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service","value":"my-value"}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",' +
+                                               '"service":"test-service","value":"my-value"}');
     });
   });
 
@@ -253,8 +254,8 @@ describe('logger, bootstrapped', () => {
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customDurationMetric('my-metric', 'my-description', start, end);
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service","value":5}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",' +
+                                               '"service":"test-service","value":5}');
     });
 
     it('Should handle several hours', () => {
@@ -264,8 +265,8 @@ describe('logger, bootstrapped', () => {
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customDurationMetric('my-metric', 'my-description', start, end);
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service","value":8105.25}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",' +
+                                               '"service":"test-service","value":8105.25}');
     });
   });
 });
@@ -276,7 +277,7 @@ function checkMessageWasLogged(level: string) {
 
 function checkMessageWasLoggedWithStaffNumber(level: string) {
   expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","staffNumber":"00112233","level":"${level}",` +
-                                           `"message":"Log Message"}`);
+                                           '"message":"Log Message"}');
 }
 
 function checkObjectWasLogged(level: string) {
