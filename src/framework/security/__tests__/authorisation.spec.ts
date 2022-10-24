@@ -1,10 +1,8 @@
-import { getStaffNumberFromRequestContext } from '../authorisation';
 import { APIGatewayEventRequestContext } from 'aws-lambda';
+import { getStaffNumberFromRequestContext } from '../authorisation';
 
 describe('authorisation', () => {
-
   describe('getStaffNumberFromRequestContext', () => {
-
     it('Should return null if no request context', () => {
       // @ts-ignore
       expect(getStaffNumberFromRequestContext(undefined)).toBeNull();
