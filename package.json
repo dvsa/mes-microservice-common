@@ -15,6 +15,7 @@
     "framework/**/*"
   ],
   "scripts": {
+    "prepare": "husky install",
     "clean": "rimraf build artefacts dist",
     "compile": "rm -rf build && tsc",
     "compile-no-emit": "tsc --noEmit -p .",
@@ -68,12 +69,6 @@
     "sourceMap": true,
     "produce-source-map": true,
     "instrument": true
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run security-scan && npm run lint && npm test",
-      "pre-commit": "run-s lint:fix lint compile-no-emit"
-    }
   },
   "bugs": {
     "url": "https://github.com/dvsa/mes-microservice-common/issues"
