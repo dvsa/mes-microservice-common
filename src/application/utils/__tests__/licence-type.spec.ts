@@ -94,7 +94,5 @@ describe('licenseToIssue', () => {
       expect(retValue1).toBe('Automatic');
       expect(retValue2).toBe('Manual');
     });
-
   });
-
 });

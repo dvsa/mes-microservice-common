@@ -8,7 +8,7 @@ import { ApplicationReference } from '@dvsa/mes-test-schema/categories/common';
  */
 export const formatApplicationReference = (appRef: ApplicationReference): number => {
   const formatter = Intl.NumberFormat('en-gb', { minimumIntegerDigits: 2 });
-  return Number(appRef.applicationId.toString() +
-                formatter.format(appRef.bookingSequence) +
-                appRef.checkDigit.toString());
+  return Number(appRef.applicationId.toString()
+                + formatter.format(appRef.bookingSequence)
+                + appRef.checkDigit.toString());
 };

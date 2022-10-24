@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
 import * as moment from 'moment';
 import { getStaffNumberFromRequestContext } from '../../framework/security/authorisation';
 
+/* eslint-disable */
 enum LogLevel {
   DEBUG = 'DEBUG',
   INFO = 'INFO',
@@ -15,75 +16,37 @@ enum LogLevelCode {
   WARN = 1,
   ERROR = 0,
 }
+/* eslint-enable */
 
 type LogContext = {
   service: string;
   staffNumber?: string;
 };
 
-type LogEntry = {
-  level: LogLevel;
-  message: string;
-};
-
 let logContext: LogContext;
 let logLevel: LogLevelCode;
-
-/**
- * Initialises the logging system, needs to be called early in Lambda execution (e.g. at the beginning of the handler
- * function).
- *
- * Looks for an environment variable called ``LOG_LEVEL`` to use, which can be set to ``DEBUG``, ``INFO``, ``WARN``
- * or ``ERROR``. Only log messages at a level equal or above the configured level are actually output. If not set,
- * the default log level is ``DEBUG``.
- *
- * Accepts either an APIGatewayProxyEvent or a ScheduledEvent.
- * If the event is an APIGatewayProxyEvent with a request context including a staff number set by the custom authoriser,
- * that is included in the structured log output.
- *
- * @param serviceName The name of the lambda service (convention is kebab-case)
- * @param event The lambda event being processed
- */
-export function bootstrapLogging(serviceName: string, event: APIGatewayProxyEvent | ScheduledEvent): void {
-  logContext = {
-    service: serviceName,
-  };
-
-  if (event && instanceOfAPIGatewayProxyEvent(event)) {
-    const staffNumber = getStaffNumberFromRequestContext(event.requestContext);
-    if (staffNumber) {
-      logContext.staffNumber = staffNumber;
-    }
-  }
-
-  logLevel = nameToCode(process.env.LOG_LEVEL);
-}
 
 function instanceOfAPIGatewayProxyEvent(object: any): object is APIGatewayProxyEvent {
   return 'requestContext' in object;
 }
 
-function nameToCode(name: string | undefined): LogLevelCode {
-  switch (name) {
-    case 'DEBUG':
-      return LogLevelCode.DEBUG;
-
-    case 'INFO':
-      return LogLevelCode.INFO;
-
-    case 'WARN':
-      return LogLevelCode.WARN;
-
-    case 'ERROR':
-      return LogLevelCode.ERROR;
-
-    default:
-      if (name) {
-        warn(`${name} is an invalid log level. Defaulting to DEBUG`);
-      } else {
-        warn('No log level set, defaulting to DEBUG');
+function formatMessage(msg: string, objs: any[]): string {
+  if (objs.length > 0) {
+    return msg + (objs.map((x: any) => {
+      if (x instanceof Error) {
+        return `${x.name}: ${x.message}`;
       }
-      return LogLevelCode.DEBUG;
+      return JSON.stringify(x);
+    }).join(' '));
+  }
+  return msg;
+}
+
+function log(logLvl: string, msg: string): void {
+  if (logContext) {
+    console.log(JSON.stringify({ ...logContext, level: logLvl, message: msg }));
+  } else {
+    console.log(JSON.stringify({ level: logLvl, message: msg }));
   }
 }
 
@@ -135,6 +98,59 @@ export function error(msg: string, ...objs: any[]): void {
   log(LogLevel.ERROR, formatMessage(msg, objs));
 }
 
+function nameToCode(name: string | undefined): LogLevelCode {
+  switch (name) {
+    case 'DEBUG':
+      return LogLevelCode.DEBUG;
+
+    case 'INFO':
+      return LogLevelCode.INFO;
+
+    case 'WARN':
+      return LogLevelCode.WARN;
+
+    case 'ERROR':
+      return LogLevelCode.ERROR;
+
+    default:
+      if (name) {
+        warn(`${name} is an invalid log level. Defaulting to DEBUG`);
+      } else {
+        warn('No log level set, defaulting to DEBUG');
+      }
+      return LogLevelCode.DEBUG;
+  }
+}
+
+/**
+ * Initialises the logging system, needs to be called early in Lambda execution (e.g. at the beginning of the handler
+ * function).
+ *
+ * Looks for an environment variable called ``LOG_LEVEL`` to use, which can be set to ``DEBUG``, ``INFO``, ``WARN``
+ * or ``ERROR``. Only log messages at a level equal or above the configured level are actually output. If not set,
+ * the default log level is ``DEBUG``.
+ *
+ * Accepts either an APIGatewayProxyEvent or a ScheduledEvent.
+ * If the event is an APIGatewayProxyEvent with a request context including a staff number set by the custom authoriser,
+ * that is included in the structured log output.
+ *
+ * @param serviceName The name of the lambda service (convention is kebab-case)
+ * @param event The lambda event being processed
+ */
+export function bootstrapLogging(serviceName: string, event: APIGatewayProxyEvent | ScheduledEvent): void {
+  logContext = {
+    service: serviceName,
+  };
+
+  if (event && instanceOfAPIGatewayProxyEvent(event)) {
+    const staffNumber = getStaffNumberFromRequestContext(event.requestContext);
+    if (staffNumber) {
+      logContext.staffNumber = staffNumber;
+    }
+  }
+
+  logLevel = nameToCode(process.env.LOG_LEVEL);
+}
 /**
  * Writes a custom metric. Should be used with CloudWatch metric filters, that scrape values from log messages.
  * @param name The metric name
@@ -163,24 +179,4 @@ export function customMetric(name: string, description: string, value?: any): vo
  */
 export function customDurationMetric(name: string, description: string, start: Date, end: Date): void {
   customMetric(name, description, moment(end).diff(moment(start), 'seconds', true));
-}
-
-function formatMessage(msg: string, objs: any[]): string {
-  if (objs.length > 0) {
-    return msg + (objs.map((x: any) => {
-      if (x instanceof Error) {
-        return `${x.name}: ${x.message}`;
-      }
-      return JSON.stringify(x);
-    }).join(' '));
-  }
-  return msg;
-}
-
-function log(logLevel: string, msg: string): void {
-  if (logContext) {
-    console.log(JSON.stringify({ ...logContext, level: logLevel, message: msg }));
-  } else {
-    console.log(JSON.stringify({ level: logLevel, message: msg }));
-  }
 }

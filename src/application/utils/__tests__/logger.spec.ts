@@ -1,5 +1,34 @@
-import { debug, bootstrapLogging, info, warn, error, customMetric, customDurationMetric } from '../logger';
 import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
+import {
+  debug, bootstrapLogging, info, warn, error, customMetric, customDurationMetric,
+} from '../logger';
+
+function checkMessageWasLogged(level: string) {
+  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}","message":"Log Message"}`);
+}
+
+function checkMessageWasLoggedWithStaffNumber(level: string) {
+  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","staffNumber":"00112233","level":"${level}",`
+    + '"message":"Log Message"}');
+}
+
+function checkObjectWasLogged(level: string) {
+  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",`
+    + '"message":"Log Message: '
+    + '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}"}');
+}
+
+function checkSeveralObjectsWereLogged(level: string) {
+  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",`
+    + '"message":"Log Message: '
+    + '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}'
+    + ' \\"test\\" 54321 false"}');
+}
+
+function checkErrorWasLogged(level: string) {
+  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",`
+    + '"message":"Log Message: Error: Oops"}');
+}
 
 describe('logger, bootstrapped', () => {
   beforeEach(() => {
@@ -212,16 +241,14 @@ describe('logger, bootstrapped', () => {
 
     it('Should accept a call that includes a ScheduledEvent', () => {
       process.env.LOG_LEVEL = 'DEBUG';
-      const scheduledEvent: ScheduledEvent = {
+      const scheduledEvent = {
         account: '12345',
         region: 'eu-west-1',
         detail: 'details',
-        'detail-type': 'type',
         source: 'CloudWatch',
         time: '2019-01-01 00:00:00',
         id: '999',
-        resources: [],
-      };
+      } as ScheduledEvent;
       bootstrapLogging('test-service', scheduledEvent);
       debug(logMessage);
       checkMessageWasLogged('DEBUG');
@@ -233,66 +260,39 @@ describe('logger, bootstrapped', () => {
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customMetric('my-metric', 'my-description');
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service"}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",'
+                                               + '"service":"test-service"}');
     });
     it('Should log a metric that includes a value', () => {
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customMetric('my-metric', 'my-description', 'my-value');
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service","value":"my-value"}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",'
+                                               + '"service":"test-service","value":"my-value"}');
     });
   });
 
   describe('customDurationMetric', () => {
     it('Should log fractions of a second', () => {
       const start = new Date(2019, 1, 31, 10, 15, 20, 0);
-      const end =   new Date(2019, 1, 31, 10, 15, 25, 0); // i.e. 5 seconds later
+      const end = new Date(2019, 1, 31, 10, 15, 25, 0); // i.e. 5 seconds later
 
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customDurationMetric('my-metric', 'my-description', start, end);
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service","value":5}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",'
+                                               + '"service":"test-service","value":5}');
     });
 
     it('Should handle several hours', () => {
       const start = new Date(2019, 1, 31, 10, 30, 20, 500);
-      const end =   new Date(2019, 1, 31, 12, 45, 25, 750); // i.e. 2:15:5.25 later, which is 8,105.25 seconds
+      const end = new Date(2019, 1, 31, 12, 45, 25, 750); // i.e. 2:15:5.25 later, which is 8,105.25 seconds
 
       process.env.LOG_LEVEL = 'DEBUG';
       bootstrapLogging('test-service', eventWithoutStaffNumber);
       customDurationMetric('my-metric', 'my-description', start, end);
-      expect(console.log).toHaveBeenCalledWith(`{"name":"my-metric","description":"my-description",` +
-                                               `"service":"test-service","value":8105.25}`);
+      expect(console.log).toHaveBeenCalledWith('{"name":"my-metric","description":"my-description",'
+                                               + '"service":"test-service","value":8105.25}');
     });
   });
 });
-
-function checkMessageWasLogged(level: string) {
-  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}","message":"Log Message"}`);
-}
-
-function checkMessageWasLoggedWithStaffNumber(level: string) {
-  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","staffNumber":"00112233","level":"${level}",` +
-                                           `"message":"Log Message"}`);
-}
-
-function checkObjectWasLogged(level: string) {
-  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",` +
-                                          '"message":"Log Message: ' +
-                                          '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}"}');
-}
-
-function checkSeveralObjectsWereLogged(level: string) {
-  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",` +
-                                            '"message":"Log Message: ' +
-                                            '{\\"aaa\\":\\"bbb\\",\\"ccc\\":123,\\"ddd\\":false}' +
-                                            ' \\"test\\" 54321 false"}');
-}
-
-function checkErrorWasLogged(level: string) {
-  expect(console.log).toHaveBeenCalledWith(`{"service":"test-service","level":"${level}",` +
-                                            '"message":"Log Message: Error: Oops"}');
-}
