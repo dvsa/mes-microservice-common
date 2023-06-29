@@ -4,7 +4,6 @@
     "strict": true,
     "declaration": true,
     "allowJs": false,
-    "sourceMap": true,
     "lib": [
       "es6",
       "es2017",
@@ -19,8 +18,7 @@
     "emitDecoratorMetadata": true
   },
   "include": [
-    "src/**/*",
-    "spec/**/*"
+    "./src/**/*",
   ],
   "exclude": [
     "node_modules"

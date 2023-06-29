@@ -1,6 +1,6 @@
 {
   "name": "@dvsa/mes-microservice-common",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "author": "DVSA",
   "license": "MIT",
   "description": "Code common to the MES microservice layer",
@@ -10,18 +10,21 @@
     "url": "git+https://github.com/dvsa/mes-microservice-common.git"
   },
   "scripts": {
-    "clean": "rimraf build artefacts dist",
-    "compile": "rm -rf build && tsc",
+    "clean": "rimraf build artefacts dist lib application domain framework",
+    "clean:temp": "rimraf application domain framework",
+    "compile": "npm run clean && tsc",
     "compile-no-emit": "tsc --noEmit -p .",
     "lint": "eslint -c .eslintrc.js --ext .ts src",
     "lint:fix": "eslint --fix -c .eslintrc.js --ext .ts src",
-    "package": "npm run clean && npm run test && npm run lint && ./package.sh",
+    "package": "npm run clean && npm run test && npm run lint",
     "prepush": "npm run security-scan && npm run lint && npm test",
     "security-scan": "git secrets --scan && git log -p | scanrepo && snyk test",
     "test": "npm run compile && jasmine",
     "test:jasmine-coverage": "nyc npm run test",
     "prepare": "husky install",
-    "prepublishOnly" : "npm run package"
+    "build:package": "npm run package && cp LICENSE build/LICENSE",
+    "prepublishOnly": "npm run build:package && cp -r ./build/* . && rm -rf ./build",
+    "postpublish": "git clean -fd && npm run clean:temp"
   },
   "dependencies": {
     "moment": "^2.29.4"
@@ -65,7 +68,9 @@
     "instrument": true
   },
   "files": [
-    "dist/**/*"
+    "application/**",
+    "domain/**",
+    "framework/**"
   ],
   "bugs": {
     "url": "https://github.com/dvsa/mes-microservice-common/issues"
