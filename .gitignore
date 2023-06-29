@@ -14,5 +14,9 @@ npm-debug.log
 *.tar
 *.zip
 dist
+lib
+application
+domain
+framework
 coverage
 .nyc_output/

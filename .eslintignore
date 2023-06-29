@@ -1,5 +1,9 @@
 dist
 build
+lib
+application
+domain
+frameowrk
 node_modules
 .idea
 .husky
