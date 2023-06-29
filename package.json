@@ -27,7 +27,6 @@
     "moment": "^2.29.4"
   },
   "devDependencies": {
-    "@dvsa/eslint-config-des": "^0.0.1",
     "@dvsa/mes-test-schema": "3.41.1",
     "@types/aws-lambda": "^8.10.119",
     "@types/jasmine": "^4.3.5",
