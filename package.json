@@ -1,6 +1,6 @@
 {
   "name": "@dvsa/mes-microservice-common",
-  "version": "0.8.4",
+  "version": "1.0.0",
   "author": "DVSA",
   "license": "MIT",
   "description": "Code common to the MES microservice layer",
@@ -16,35 +16,36 @@
     "lint": "eslint -c .eslintrc.js --ext .ts src",
     "lint:fix": "eslint --fix -c .eslintrc.js --ext .ts src",
     "package": "npm run clean && npm run test && npm run lint && ./package.sh",
-    "postci": "npm run bootstrap",
     "prepush": "npm run security-scan && npm run lint && npm test",
-    "security-scan": "git secrets --scan && git log -p | scanrepo",
+    "security-scan": "git secrets --scan && git log -p | scanrepo && snyk test",
     "test": "npm run compile && jasmine",
     "test:jasmine-coverage": "nyc npm run test",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepublishOnly" : "npm run package"
   },
   "dependencies": {
-    "@types/aws-lambda": "^8.10.108",
     "moment": "^2.29.4"
   },
   "devDependencies": {
-    "@dvsa/mes-test-schema": "3.39.10",
-    "@types/jasmine": "^4.3.0",
-    "@types/node": "^16.10.2",
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
-    "@typescript-eslint/eslint-plugin-tslint": "^5.40.0",
-    "@typescript-eslint/parser": "^5.40.0",
-    "husky": "^8.0.1",
-    "jasmine": "^4.4.0",
+    "@dvsa/mes-test-schema": "3.41.1",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/jasmine": "^4.3.5",
+    "@types/node": "^18.11.0",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint": "^8.43.0",
+    "eslint-plugin-import": "^2.27.5",
+    "husky": "^8.0.3",
+    "jasmine": "^5.0.2",
     "jasmine-spec-reporter": "^7.0.0",
     "npm-run-all": "^4.1.5",
     "nyc": "^15.1.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.1",
+    "snyk": "^1.1186.0",
     "ts-node": "^10.9.1",
-    "eslint": "^8.25.0",
-    "eslint-plugin-import": "^2.26.0",
     "typemoq": "^2.1.0",
-    "typescript": "4.8.4"
+    "typescript": "5.0.4"
   },
   "nyc": {
     "require": [
@@ -64,9 +65,7 @@
     "instrument": true
   },
   "files": [
-    "application/**/*",
-    "domain/**/*",
-    "framework/**/*"
+    "dist/**/*"
   ],
   "bugs": {
     "url": "https://github.com/dvsa/mes-microservice-common/issues"

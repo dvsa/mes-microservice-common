@@ -1,0 +1,15 @@
+name: Publish package
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  publish:
+    uses: dvsa/des-workflow-actions/.github/workflows/publish-package.yaml@main
+    with:
+      WORKING_DIRECTORY: '.'
+      PACKAGE_NAME: '@dvsa/mes-microservice-common'
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.DES_ACCESS_TOKEN }}
