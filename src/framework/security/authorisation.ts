@@ -1,4 +1,5 @@
 import { APIGatewayEventRequestContext } from 'aws-lambda';
+import { ExaminerRole } from '../../domain/examiner-role';
 
 /**
  * Get the current authenticated users staff number, reading from the request context.
@@ -17,9 +18,9 @@ export function getStaffNumberFromRequestContext(requestContext: APIGatewayEvent
  * @param requestContext The request context
  * @returns The examiner role, or ``null`` if none set
  */
-export const getRoleFromRequestContext = (requestContext: APIGatewayEventRequestContext): string | null => {
+export const getRoleFromRequestContext = (requestContext: APIGatewayEventRequestContext): ExaminerRole | null => {
   if (requestContext?.authorizer && typeof requestContext.authorizer.examinerRole === 'string') {
-    return requestContext.authorizer.examinerRole;
+    return requestContext.authorizer.examinerRole as ExaminerRole;
   }
   return null;
 };

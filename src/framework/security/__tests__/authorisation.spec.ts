@@ -1,5 +1,6 @@
 import {getRoleFromRequestContext, getStaffNumberFromRequestContext} from '../authorisation';
-import { APIGatewayEventRequestContext } from 'aws-lambda';
+import {APIGatewayEventRequestContext} from 'aws-lambda';
+import {ExaminerRole} from '../../../domain/examiner-role';
 
 describe('authorisation', () => {
   describe('getStaffNumberFromRequestContext', () => {
@@ -62,7 +63,7 @@ describe('authorisation', () => {
           examinerRole: 'DE',
         },
       } as APIGatewayEventRequestContext;
-      expect(getRoleFromRequestContext(dummyEvent)).toBe('DE');
+      expect(getRoleFromRequestContext(dummyEvent)).toBe(ExaminerRole.DE);
     });
   });
 });
