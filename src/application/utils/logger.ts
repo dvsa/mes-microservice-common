@@ -165,12 +165,12 @@ export function customDurationMetric(name: string, description: string, start: D
 
 function formatMessage(msg: string, objs: any[]): string {
   if (objs.length > 0) {
-    return `${msg} ` + (objs.map((x: any) => {
+    return msg + (objs.map((x: any) => {
       if (x instanceof Error) {
-        return `${x.name}: ${x.message}`;
+        return ` ${x.name}: ${x.message}`;
       }
-      return JSON.stringify(x);
-    }).join(' '));
+      return ` ${JSON.stringify(x)}`;
+    }).join(''));
   }
   return msg;
 }

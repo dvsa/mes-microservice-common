@@ -31,7 +31,7 @@ describe('logger, bootstrapped', () => {
   };
 
   const logMessage = 'Log Message';
-  const logPrefix = 'Log Message: ';
+  const logPrefix = 'Log Message:';
   const obj = { aaa: 'bbb', ccc: 123, ddd: false };
   const s = 'test';
   const n = 54321;
