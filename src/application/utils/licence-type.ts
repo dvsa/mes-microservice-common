@@ -6,7 +6,8 @@ const AUTOMATIC: string = 'Automatic';
 export function licenceToIssue(
   category: string,
   vehicleTransmission: string,
-  code78Present?: boolean): string {
+  code78Present?: boolean,
+): string {
 
   const categoriesToCheck: string[] = [
     TestCategory.C,
