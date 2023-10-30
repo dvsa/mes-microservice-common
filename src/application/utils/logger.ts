@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
 import * as moment from 'moment';
-import { getStaffNumberFromRequestContext } from '../../framework/security/authorisation';
+import { getStaffNumberFromRequestContext, getRoleFromRequestContext } from '../../framework/security/authorisation';
+import { ExaminerRole } from "../../domain/examiner-role";
 
 enum LogLevel {
   DEBUG = 'DEBUG',
@@ -19,11 +20,7 @@ enum LogLevelCode {
 type LogContext = {
   service: string;
   staffNumber?: string;
-};
-
-type LogEntry = {
-  level: LogLevel;
-  message: string;
+  role?: ExaminerRole;
 };
 
 let logContext: LogContext;
@@ -39,27 +36,28 @@ let logLevel: LogLevelCode;
  *
  * Accepts either an APIGatewayProxyEvent or a ScheduledEvent.
  * If the event is an APIGatewayProxyEvent with a request context including a staff number set by the custom authoriser,
- * that is included in the structured log output.
+ * that is included in the structured log output, along with the examiner role.
  *
- * @param serviceName The name of the lambda service (convention is kebab-case)
+ * @param functionName The name of the lambda function (convention is kebab-case)
  * @param event The lambda event being processed
  */
-export function bootstrapLogging(serviceName: string, event: APIGatewayProxyEvent | ScheduledEvent): void {
+export function bootstrapLogging(functionName: string, event: APIGatewayProxyEvent | ScheduledEvent): void {
   logContext = {
-    service: serviceName,
+    service: functionName,
   };
 
   if (event && instanceOfAPIGatewayProxyEvent(event)) {
     const staffNumber = getStaffNumberFromRequestContext(event.requestContext);
-    if (staffNumber) {
-      logContext.staffNumber = staffNumber;
-    }
+    if (staffNumber) logContext.staffNumber = staffNumber;
+
+    const role = getRoleFromRequestContext(event.requestContext);
+    if (role) logContext.role = role;
   }
 
   logLevel = nameToCode(process.env.LOG_LEVEL);
 }
 
-function instanceOfAPIGatewayProxyEvent(object: any): object is APIGatewayProxyEvent {
+function instanceOfAPIGatewayProxyEvent(object: APIGatewayProxyEvent | ScheduledEvent): object is APIGatewayProxyEvent {
   return 'requestContext' in object;
 }
 
@@ -169,10 +167,10 @@ function formatMessage(msg: string, objs: any[]): string {
   if (objs.length > 0) {
     return msg + (objs.map((x: any) => {
       if (x instanceof Error) {
-        return `${x.name}: ${x.message}`;
+        return ` ${x.name}: ${x.message}`;
       }
-      return JSON.stringify(x);
-    }).join(' '));
+      return ` ${JSON.stringify(x)}`;
+    }).join(''));
   }
   return msg;
 }
