@@ -4,7 +4,7 @@ import {HttpStatus} from './http-status';
 /**
  * Response object creation helper
  * @param body
- * @param statusCode
+ * @param statusCode - Defaults to 'OK' / 200 status
  * @param reqHeaders
  * @returns {Response}
  */

@@ -1,6 +1,6 @@
 {
   "name": "@dvsa/mes-microservice-common",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "DVSA",
   "license": "MIT",
   "description": "Code common to the MES microservice layer",
