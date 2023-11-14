@@ -17,9 +17,17 @@ export const createResponse = <T>(
         'Access-Control-Allow-Origin': '*', // Required for CORS support to work
     };
 
+    const metaHeaders: RequestHeaders = (!!process.env.X_AMZN_TRACE_ID)
+        ? { _X_AMZN_TRACE_ID: process.env.X_AMZN_TRACE_ID }
+        : {}
+
     return {
         statusCode,
-        headers: {...accessControlAllowOriginHeader, ...reqHeaders},
         body: (body === null) ? null : JSON.stringify(body),
+        headers: {
+            ...accessControlAllowOriginHeader,
+            ...reqHeaders,
+            ...metaHeaders,
+        },
     };
 };
