@@ -11,8 +11,8 @@ import {getRoleFromRequestContext} from "../../framework/security/authorisation"
  * @param {string} paramName
  * @constructor
  */
-export function NonNullPathParam(paramName: string) {
-    return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function NonNullPathParam<T>(paramName: string) {
+    return function (_target: T, _propertyKey: string, descriptor: PropertyDescriptor) {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
@@ -42,8 +42,8 @@ export function NonNullPathParam(paramName: string) {
  * @param {ExaminerRole} examinerRole
  * @constructor
  */
-export function ValidateRole(examinerRole: ExaminerRole) {
-    return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function ValidateRole<T>(examinerRole: ExaminerRole) {
+    return function (_target: T, _propertyKey: string, descriptor: PropertyDescriptor) {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
@@ -69,8 +69,8 @@ export function ValidateRole(examinerRole: ExaminerRole) {
  * @param {Function} validator
  * @constructor
  */
-export function ValidatePathParam(param: string, validator: Function) {
-    return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function ValidatePathParam<T>(param: string, validator: Function) {
+    return function (_target: T, _propertyKey: string, descriptor: PropertyDescriptor) {
         const originalMethod = descriptor.value;
 
         descriptor.value = async function (...args: any[]) {
