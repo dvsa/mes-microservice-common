@@ -85,7 +85,7 @@ export function ValidatePathParam(param: string, validator: Function) {
 
             if (!validator(pathParam)) {
                 error('Path parameter is invalid.', {param, value: pathParam});
-                return createResponse(`Path parameter failed validation: ${pathParam}`, HttpStatus.BAD_REQUEST);
+                return createResponse(`Path parameter failed validation: \"${param}\"`, HttpStatus.BAD_REQUEST);
             }
 
             // Call the original method if the check passes

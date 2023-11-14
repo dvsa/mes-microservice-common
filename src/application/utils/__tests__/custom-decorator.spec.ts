@@ -76,7 +76,7 @@ describe('CustomDecorators', () => {
                 pathParameters: {'something': '1234'} as APIGatewayProxyEventPathParameters,
             } as APIGatewayProxyEvent);
             expect(resp.createResponse).toHaveBeenCalledWith(
-                'Path parameter is invalid.', HttpStatus.BAD_REQUEST,
+                'Path parameter failed validation: "test"', HttpStatus.BAD_REQUEST,
             );
         });
 
