@@ -21,6 +21,7 @@ type LogContext = {
   service: string;
   staffNumber?: string;
   role?: ExaminerRole;
+  xRayTraceId?: string;
 };
 
 let logContext: LogContext;
@@ -52,6 +53,10 @@ export function bootstrapLogging(functionName: string, event: APIGatewayProxyEve
 
     const role = getRoleFromRequestContext(event.requestContext);
     if (role) logContext.role = role;
+  }
+
+  if (!!process.env.X_AMZN_TRACE_ID) {
+    logContext.xRayTraceId = process.env.X_AMZN_TRACE_ID;
   }
 
   logLevel = nameToCode(process.env.LOG_LEVEL);
