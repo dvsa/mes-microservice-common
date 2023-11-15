@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, ScheduledEvent } from 'aws-lambda';
 import * as moment from 'moment';
 import { getStaffNumberFromRequestContext, getRoleFromRequestContext } from '../../framework/security/authorisation';
 import { ExaminerRole } from "../../domain/examiner-role";
+import {Tracer} from "@aws-lambda-powertools/tracer";
 
 enum LogLevel {
   DEBUG = 'DEBUG',
@@ -22,6 +23,7 @@ type LogContext = {
   staffNumber?: string;
   role?: ExaminerRole;
   xRayTraceId?: string;
+  coldStart?: boolean;
 };
 
 let logContext: LogContext;
@@ -41,8 +43,9 @@ let logLevel: LogLevelCode;
  *
  * @param functionName The name of the lambda function (convention is kebab-case)
  * @param event The lambda event being processed
+ * @param tracer
  */
-export function bootstrapLogging(functionName: string, event: APIGatewayProxyEvent | ScheduledEvent): void {
+export function bootstrapLogging(functionName: string, event: APIGatewayProxyEvent | ScheduledEvent, tracer?: Tracer): void {
   logContext = {
     service: functionName,
   };
@@ -55,8 +58,9 @@ export function bootstrapLogging(functionName: string, event: APIGatewayProxyEve
     if (role) logContext.role = role;
   }
 
-  if (!!process.env.X_AMZN_TRACE_ID) {
-    logContext.xRayTraceId = process.env.X_AMZN_TRACE_ID;
+  if (!!tracer) {
+    logContext.coldStart = tracer.isColdStart();
+    logContext.xRayTraceId = tracer.getRootXrayTraceId();
   }
 
   logLevel = nameToCode(process.env.LOG_LEVEL);

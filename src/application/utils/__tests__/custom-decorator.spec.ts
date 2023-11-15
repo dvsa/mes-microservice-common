@@ -3,7 +3,7 @@ import {
     APIGatewayProxyEvent,
     APIGatewayProxyEventPathParameters,
 } from 'aws-lambda';
-import {Logger, NonNullPathParam, NonNullQueryParam, ValidatePathParam, ValidateRole} from "../custom-decorators";
+import {NonNullPathParam, NonNullQueryParam, ValidatePathParam, ValidateRole} from "../custom-decorators";
 import * as resp from "../../api/create-response";
 import {ExaminerRole} from "../../../domain/examiner-role";
 import {HttpStatus} from "../../api/http-status";
@@ -109,20 +109,6 @@ describe('CustomDecorators', () => {
                 queryStringParameters: {testParam: 'test'} as APIGatewayProxyEventPathParameters,
             } as APIGatewayProxyEvent);
 
-            expect(data.statusCode).toEqual(200);
-        });
-    });
-
-    describe('Logger', () => {
-        class TestClass {
-            @Logger('function-name')
-            async handler(event: APIGatewayProxyEvent) {
-                return {statusCode: 200};
-            }
-        }
-
-        it('should always allow through filter', async () => {
-            const data = await new TestClass().handler({} as APIGatewayProxyEvent);
             expect(data.statusCode).toEqual(200);
         });
     });
