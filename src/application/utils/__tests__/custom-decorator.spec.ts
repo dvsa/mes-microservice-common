@@ -65,7 +65,7 @@ describe('CustomDecorators', () => {
 
     describe('ValidatePathParam', () => {
         class TestClass {
-            @ValidatePathParam('test', (param: string) => param === '1234')
+            @ValidatePathParam<TestClass>('test', (param: string) => param === '1234')
             async handler(event: APIGatewayProxyEvent) {
                 return {statusCode: 200};
             }

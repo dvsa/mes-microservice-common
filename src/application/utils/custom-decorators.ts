@@ -8,10 +8,10 @@ import {getRoleFromRequestContext} from "../../framework/security/authorisation"
  * Decorator method used to validate path parameters being defined
  * If there are no pathParameters - Return 400
  * If the specified pathParameter is not defined - Return 400
- * @param {string} paramName
+ * @param {string} param
  * @constructor
  */
-export function NonNullPathParam<T>(paramName: string) {
+export function NonNullPathParam<T>(param: string) {
     return function (_target: T, _propertyKey: string, descriptor: PropertyDescriptor) {
         const originalMethod = descriptor.value;
 
@@ -25,9 +25,9 @@ export function NonNullPathParam<T>(paramName: string) {
             }
 
             // Check for the specific path parameter
-            if (!event.pathParameters[paramName]) {
-                error('Path parameter not defined', paramName);
-                return createResponse(`Path parameter is required: ${paramName}`, HttpStatus.BAD_REQUEST);
+            if (!event.pathParameters[param]) {
+                error('Path parameter not defined', param);
+                return createResponse(`Path parameter is required: ${param}`, HttpStatus.BAD_REQUEST);
             }
 
             // Call the original method if the check passes
