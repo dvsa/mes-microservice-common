@@ -93,3 +93,34 @@ export function ValidatePathParam<T>(param: string, validator: Function) {
         };
     };
 }
+
+/**
+ * Decorator method used to validate query string parameters being defined
+ * If there are no queryStringParameters - Return 400
+ * If the specified queryStringParameters is not defined - Return 400
+ * @param {string} param
+ * @constructor
+ */
+export function NonNullQueryParam<T>(param: string) {
+    return function (_target: T, _propertyKey: string, descriptor: PropertyDescriptor) {
+        const originalMethod = descriptor.value;
+
+        descriptor.value = async function (...args: any[]) {
+            const event = args[0];
+
+            if (!event || !event.queryStringParameters) {
+                error('Event object or query string parameters are missing.');
+                return createResponse('Event object or query string parameters are missing.', HttpStatus.BAD_REQUEST);
+            }
+
+            // Check for the specific query parameter
+            if (!event.queryStringParameters[param]) {
+                error('Query parameter not defined', param);
+                return createResponse(`Query parameter is required: ${param}`, HttpStatus.BAD_REQUEST);
+            }
+
+            // Call the original method if the check passes
+            return originalMethod.apply(this, args);
+        };
+    };
+}

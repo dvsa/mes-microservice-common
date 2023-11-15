@@ -3,7 +3,7 @@ import {
     APIGatewayProxyEvent,
     APIGatewayProxyEventPathParameters,
 } from 'aws-lambda';
-import {NonNullPathParam, ValidatePathParam, ValidateRole} from "../custom-decorators";
+import {NonNullPathParam, NonNullQueryParam, ValidatePathParam, ValidateRole} from "../custom-decorators";
 import * as resp from "../../api/create-response";
 import {ExaminerRole} from "../../../domain/examiner-role";
 import {HttpStatus} from "../../api/http-status";
@@ -83,6 +83,30 @@ describe('CustomDecorators', () => {
         it('should continue with handler code if passes decorator checks', async () => {
             const data = await new TestClass().handler({
                 pathParameters: {'test': '1234'} as APIGatewayProxyEventPathParameters,
+            } as APIGatewayProxyEvent);
+
+            expect(data.statusCode).toEqual(200);
+        });
+    });
+
+    describe('NonNullQueryParam', () => {
+        class TestClass {
+            @NonNullQueryParam('testParam')
+            async handler(event: APIGatewayProxyEvent) {
+                return {statusCode: 200};
+            }
+        }
+
+        it('should return 400 error with object/query param missing message', async () => {
+            await new TestClass().handler({pathParameters: null} as APIGatewayProxyEvent);
+            expect(resp.createResponse).toHaveBeenCalledWith(
+                'Event object or query string parameters are missing.', HttpStatus.BAD_REQUEST,
+            );
+        });
+
+        it('should continue with handler code if passes decorator checks', async () => {
+            const data = await new TestClass().handler({
+                queryStringParameters: {testParam: 'test'} as APIGatewayProxyEventPathParameters,
             } as APIGatewayProxyEvent);
 
             expect(data.statusCode).toEqual(200);
