@@ -1,4 +1,4 @@
-import {error} from "./logger";
+import {bootstrapLogging, error} from "./logger";
 import {createResponse} from "../api/create-response";
 import {HttpStatus} from "../api/http-status";
 import {ExaminerRole} from "../../domain/examiner-role";
@@ -120,6 +120,25 @@ export function NonNullQueryParam<T>(param: string) {
             }
 
             // Call the original method if the check passes
+            return originalMethod.apply(this, args);
+        };
+    };
+}
+
+/**
+ * Decorator to use when want to initialise logging for a function
+ * @param {string} functionName
+ * @constructor
+ */
+export function Logger<T>(functionName: string) {
+    return function (_target: T, _propertyKey: string, descriptor: PropertyDescriptor) {
+        const originalMethod = descriptor.value;
+
+        descriptor.value = async function (...args: any[]) {
+            const event = args[0];
+
+            bootstrapLogging(functionName, event);
+
             return originalMethod.apply(this, args);
         };
     };
