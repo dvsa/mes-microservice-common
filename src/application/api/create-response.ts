@@ -18,7 +18,7 @@ export const createResponse = <T>(
         'Access-Control-Allow-Origin': '*', // Required for CORS support to work
     };
 
-    const metaHeaders: RequestHeaders = (!!logContext.xRayTraceId)
+    const metaHeaders: RequestHeaders = (!!logContext?.xRayTraceId)
         ? { _X_AMZN_TRACE_ID: logContext.xRayTraceId }
         : {}
 
