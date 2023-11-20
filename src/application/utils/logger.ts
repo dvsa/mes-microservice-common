@@ -26,7 +26,7 @@ type LogContext = {
   coldStart?: boolean;
 };
 
-let logContext: LogContext;
+export let logContext: LogContext;
 let logLevel: LogLevelCode;
 
 /**
