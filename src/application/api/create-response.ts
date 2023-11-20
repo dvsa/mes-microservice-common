@@ -1,5 +1,6 @@
 import {RequestHeaders, Response} from './response';
 import {HttpStatus} from './http-status';
+import {logContext} from "../utils/logger";
 
 /**
  * Response object creation helper
@@ -17,8 +18,8 @@ export const createResponse = <T>(
         'Access-Control-Allow-Origin': '*', // Required for CORS support to work
     };
 
-    const metaHeaders: RequestHeaders = (!!process.env.X_AMZN_TRACE_ID)
-        ? { _X_AMZN_TRACE_ID: process.env.X_AMZN_TRACE_ID }
+    const metaHeaders: RequestHeaders = (!!logContext.xRayTraceId)
+        ? { _X_AMZN_TRACE_ID: logContext.xRayTraceId }
         : {}
 
     return {
