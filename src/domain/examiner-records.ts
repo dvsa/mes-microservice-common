@@ -5,7 +5,7 @@ import {IndependentDriving, QuestionResult, TestCentre} from "@dvsa/mes-test-sch
 import {Circuit} from "@dvsa/mes-test-schema/categories/AM1";
 import {get} from "lodash";
 
-/**z
+/**
  * Formats test results into a format usable for Examiner Records.
  *
  * @param testResult the test result to be formatted
@@ -13,24 +13,24 @@ import {get} from "lodash";
  */
 export interface ExaminerRecordModel {
     appRef: number,
-    testCategory?: TestCategory,
-    testCentre?: TestCentre,
-    routeNumber?: number,
-    startDate?: string,
-    controlledStop?: boolean,
-    independentDriving?: IndependentDriving,
-    circuit?: Circuit,
-    safetyQuestions?: QuestionResult[],
-    balanceQuestions?: QuestionResult[],
-    manoeuvres?: any,
-    showMeQuestions?: QuestionResult[],
-    tellMeQuestions?: QuestionResult[],
+    testCategory: TestCategory,
+    testCentre: TestCentre,
+    routeNumber: number,
+    startDate: string,
+    controlledStop: boolean,
+    independentDriving: IndependentDriving,
+    circuit: Circuit,
+    safetyQuestions: QuestionResult[],
+    balanceQuestions: QuestionResult[],
+    manoeuvres: any,
+    showMeQuestions: QuestionResult[],
+    tellMeQuestions: QuestionResult[],
 }
 export const formatForExaminerRecords = (testResult: TestResultSchemasUnion): ExaminerRecordModel => {
     return <ExaminerRecordModel>{
-        appRef: formatApplicationReference(get(testResult, 'journalData.applicationReference')),
-        testCategory: get(testResult, 'category', null) as TestCategory,
-        testCentre: get(testResult, 'journalData.testCentre', null) as TestCentre,
+        appRef: formatApplicationReference(testResult.journalData.applicationReference),
+        testCategory: testResult.category,
+        testCentre: testResult.journalData.testCentre,
         routeNumber: Number(get(testResult, 'testSummary.routeNumber', null)),
         startDate: testResult.journalData.testSlotAttributes.start,
         controlledStop: get(testResult, 'testData.controlledStop.selected', null) as boolean | null,
