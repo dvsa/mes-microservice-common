@@ -1,4 +1,4 @@
-import {ExaminerRecordModel, formatForExaminerRecords} from "../examiner-records";
+import {formatForExaminerRecords} from "../examiner-records";
 import {TestResultSchemasUnion} from "@dvsa/mes-test-schema/categories";
 import {JournalData} from "@dvsa/mes-test-schema/categories/common";
 import {TestCategory} from "@dvsa/mes-test-schema/category-definitions/common/test-category";
