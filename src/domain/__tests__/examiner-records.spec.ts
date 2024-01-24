@@ -1,4 +1,4 @@
-import {formatForExaminerRecords} from "../examiner-records";
+import {ExaminerRecordModel, formatForExaminerRecords} from "../examiner-records";
 import {TestResultSchemasUnion} from "@dvsa/mes-test-schema/categories";
 import {JournalData} from "@dvsa/mes-test-schema/categories/common";
 import {TestCategory} from "@dvsa/mes-test-schema/category-definitions/common/test-category";
@@ -224,7 +224,7 @@ describe('formatForExaminerRecords', () => {
             tellMeQuestions: [{'code': 'T10', 'description': 'Rear fog light(s)', 'outcome': 'P'}],
         });
     });
-    it('Should return the correct data with a null field if the value is not present', () => {
+    it('Should return the correct data with optional data not present', () => {
         let mockTest = {
             category: TestCategory.B,
             journalData: {
@@ -251,16 +251,42 @@ describe('formatForExaminerRecords', () => {
                 costCode: 'EXT',
                 centreName: 'Test Centre (Example)',
             },
-            routeNumber: 5,
             startDate: '1111-11-11',
-            controlledStop: null,
-            independentDriving: null,
-            circuit: null,
-            safetyQuestions: [],
-            balanceQuestions: [],
-            manoeuvres: null,
-            showMeQuestions: [],
-            tellMeQuestions: [],
+        });
+    });
+    it('Should return the correct data with some optional data not present', () => {
+        let mockTest = {
+            testSummary: {
+                routeNumber: 5,
+            },
+            category: TestCategory.B,
+            journalData: {
+                'applicationReference': {
+                    'checkDigit': 1,
+                    'applicationId': 10123433,
+                    'bookingSequence': 1,
+                },
+                testSlotAttributes: {
+                    start: '1111-11-11',
+                },
+                testCentre: {
+                    centreId: 1,
+                    costCode: 'EXT',
+                    centreName: 'Test Centre (Example)',
+                },
+            } as JournalData
+        } as TestResultSchemasUnion;
+
+        expect(formatForExaminerRecords(mockTest)).toEqual({
+            appRef: 10123433011,
+            testCategory: TestCategory.B,
+            routeNumber: 5,
+            testCentre: {
+                centreId: 1,
+                costCode: 'EXT',
+                centreName: 'Test Centre (Example)',
+            },
+            startDate: '1111-11-11',
         });
     });
 });

@@ -15,37 +15,75 @@ export interface ExaminerRecordModel {
     appRef: number,
     testCategory: TestCategory,
     testCentre: TestCentre,
-    routeNumber: number,
     startDate: string,
-    controlledStop: boolean,
-    independentDriving: IndependentDriving,
-    circuit: Circuit,
-    safetyQuestions: QuestionResult[],
-    balanceQuestions: QuestionResult[],
-    manoeuvres: any,
-    showMeQuestions: QuestionResult[],
-    tellMeQuestions: QuestionResult[],
+    routeNumber?: number,
+    controlledStop?: boolean,
+    independentDriving?: IndependentDriving,
+    circuit?: Circuit,
+    safetyQuestions?: QuestionResult[],
+    balanceQuestions?: QuestionResult[],
+    manoeuvres?: any,
+    showMeQuestions?: QuestionResult[],
+    tellMeQuestions?: QuestionResult[],
 }
+
 export const formatForExaminerRecords = (testResult: TestResultSchemasUnion): ExaminerRecordModel => {
-    return <ExaminerRecordModel>{
+    let result: ExaminerRecordModel = {
         appRef: formatApplicationReference(testResult.journalData.applicationReference),
-        testCategory: testResult.category,
+        testCategory: testResult.category as TestCategory,
         testCentre: testResult.journalData.testCentre,
-        routeNumber: Number(get(testResult, 'testSummary.routeNumber', null)),
         startDate: testResult.journalData.testSlotAttributes.start,
-        controlledStop: get(testResult, 'testData.controlledStop.selected', null) as boolean | null,
-        independentDriving: get(testResult, 'testSummary.independentDriving', null) as IndependentDriving | null,
-        circuit: get(testResult, 'testSummary.circuit', null) as Circuit | null,
-        safetyQuestions: get(testResult, 'testData.safetyAndBalanceQuestions.safetyQuestions', []) as QuestionResult[],
-        balanceQuestions: get(testResult, 'testData.safetyAndBalanceQuestions.balanceQuestions', []) as QuestionResult[],
-        manoeuvres: get(testResult, 'testData.manoeuvres'),
-        showMeQuestions: [
-            ...[get(testResult, 'testData.vehicleChecks.showMeQuestion', [])] as [QuestionResult],
-            ...get(testResult, 'testData.vehicleChecks.showMeQuestions', []) as QuestionResult[],
-        ],
-        tellMeQuestions: [
-            ...[get(testResult, 'testData.vehicleChecks.tellMeQuestion', [])] as [QuestionResult],
-            ...get(testResult, 'testData.vehicleChecks.tellMeQuestions', []) as QuestionResult[],
-        ],
     };
+
+    [
+        {field: 'controlledStop', value: get(testResult,'testData.controlledStop.selected')},
+        {field: 'independentDriving', value: get(testResult,'testSummary.independentDriving')},
+        {field: 'circuit', value: get(testResult,'testSummary.circuit')},
+        {field: 'safetyQuestions', value: get(testResult,'testData.safetyAndBalanceQuestions.safetyQuestions')},
+        {field: 'balanceQuestions', value: get(testResult,'testData.safetyAndBalanceQuestions.balanceQuestions')},
+        {field: 'manoeuvres', value: get(testResult,'testData.manoeuvres')},
+    ].forEach(item => {
+        if (item.value) {
+            result = {
+                ...result,
+                [item.field]: item.value,
+            }
+        }
+    });
+
+    let routeNumber = get(testResult, 'testSummary.routeNumber');
+    if (routeNumber) {
+        result = {
+            ...result,
+            routeNumber: Number(routeNumber),
+        }
+    }
+
+    let showQuestion= get(testResult, 'testData.vehicleChecks.showMeQuestion');
+    let showQuestions= get(testResult, 'testData.vehicleChecks.showMeQuestions');
+    if (showQuestion) {
+        result = {
+            ...result,
+            showMeQuestions: [showQuestion],
+        }
+    } else if (showQuestions) {
+        result = {
+            ...result,
+            showMeQuestions: showQuestions,
+        }
+    }
+    let tellQuestion= get(testResult, 'testData.vehicleChecks.tellMeQuestion');
+    let tellQuestions= get(testResult, 'testData.vehicleChecks.tellMeQuestions');
+    if (tellQuestion) {
+        result = {
+            ...result,
+            tellMeQuestions: [tellQuestion],
+        }
+    } else if (tellQuestions) {
+        result = {
+            ...result,
+            tellMeQuestions: tellQuestions,
+        }
+    }
+    return result;
 };
