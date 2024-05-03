@@ -12,6 +12,7 @@ export interface ExaminerRecordModel {
   startDate: string,
   routeNumber?: number,
   controlledStop?: boolean,
+  extendedTest?: boolean,
   independentDriving?: IndependentDriving,
   circuit?: Circuit,
   safetyQuestions?: QuestionResult[],
