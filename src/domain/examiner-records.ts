@@ -8,6 +8,7 @@ import { Circuit } from "@dvsa/mes-test-schema/categories/AM1";
 export interface ExaminerRecordModel {
   appRef: number,
   testCategory: TestCategory,
+  activityCode: number,
   testCentre: TestCentre,
   startDate: string,
   routeNumber?: number,
