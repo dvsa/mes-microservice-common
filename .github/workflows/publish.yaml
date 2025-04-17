@@ -12,4 +12,4 @@ jobs:
       WORKING_DIRECTORY: '.'
       PACKAGE_NAME: '@dvsa/mes-microservice-common'
     secrets:
-      ACCESS_TOKEN: ${{ secrets.DES_ACCESS_TOKEN }}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
