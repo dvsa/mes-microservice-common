@@ -1,6 +1,6 @@
 {
   "name": "@dvsa/mes-microservice-common",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "DVSA",
   "license": "MIT",
   "description": "Code common to the MES microservice layer",
@@ -49,7 +49,7 @@
     "jasmine-spec-reporter": "^7.0.0",
     "npm-run-all": "^4.1.5",
     "rimraf": "^5.0.5",
-    "snyk": "^1.1248.0",
+    "snyk": "1.1297.3",
     "ts-node": "^10.9.1",
     "typemoq": "^2.1.0",
     "typescript": "5.2.2"
