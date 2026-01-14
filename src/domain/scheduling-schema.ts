@@ -46,7 +46,7 @@ export const ScheduleBookings = mysqlTable(
             'BE',
             'TC',
             'SC']).notNull(),
-        testslot_vehicle_slot_type_code: int('testslot_vehicle_slot_type_code').notNull(),
+        testslot_vehicle_slot_type_code: int('testslot_vehicle_slot_type_code'),
 
         testcentre_name: varchar('testcentre_name', {length: 255}).notNull(),
         testcentre_cost_code: varchar('testcentre_cost_code', {length: 50}).notNull(),
