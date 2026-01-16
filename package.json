@@ -1,6 +1,6 @@
 {
   "name": "@dvsa/mes-microservice-common",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "DVSA",
   "license": "MIT",
   "description": "Code common to the MES microservice layer",
@@ -31,9 +31,7 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/tracer": "^1.16.0",
-    "moment": "^2.29.4",
-    "drizzle-orm": "^0.45.1",
-    "mysql2": "^3.9.8"
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@dvsa/mes-test-schema": "3.45.0",
