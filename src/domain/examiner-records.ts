@@ -6,7 +6,7 @@ import { Circuit } from "@dvsa/mes-test-schema/categories/AM1";
  * Interface for Examiner Records
  */
 export interface ExaminerRecordModel {
-  appRef: string,
+  appRef: number,
   testCategory: TestCategory,
   activityCode: number,
   testCentre: TestCentre,
