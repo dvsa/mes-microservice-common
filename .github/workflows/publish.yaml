@@ -5,6 +5,10 @@ on:
     branches:
       - develop
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
   publish:
     uses: dvsa/des-workflow-actions/.github/workflows/publish-package.yaml@main
